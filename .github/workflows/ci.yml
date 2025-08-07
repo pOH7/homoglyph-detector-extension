@@ -1,0 +1,246 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  release:
+    types: [ published ]
+
+jobs:
+  validate:
+    name: Validate Extension
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Validate manifest.json
+      run: |
+        echo "Validating manifest.json structure..."
+        node -e "
+          const fs = require('fs');
+          const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+          
+          // Required fields for Manifest V3
+          const required = ['manifest_version', 'name', 'version', 'description'];
+          for (const field of required) {
+            if (!manifest[field]) {
+              console.error(\`Missing required field: \${field}\`);
+              process.exit(1);
+            }
+          }
+          
+          // Validate manifest version
+          if (manifest.manifest_version !== 3) {
+            console.error('This extension requires Manifest V3');
+            process.exit(1);
+          }
+          
+          console.log('✅ manifest.json is valid');
+          console.log(\`Extension: \${manifest.name} v\${manifest.version}\`);
+        "
+    
+    - name: Validate JavaScript files
+      run: |
+        echo "Validating JavaScript syntax..."
+        for file in *.js; do
+          if [ -f "$file" ]; then
+            echo "Checking $file..."
+            node -c "$file" || exit 1
+          fi
+        done
+        echo "✅ All JavaScript files have valid syntax"
+    
+    - name: Check file structure
+      run: |
+        echo "Validating extension file structure..."
+        
+        # Check required files
+        required_files=("manifest.json" "homoglyph-detector.js" "content.js" "background.js" "popup.html" "popup.js" "styles.css")
+        
+        for file in "${required_files[@]}"; do
+          if [ ! -f "$file" ]; then
+            echo "❌ Missing required file: $file"
+            exit 1
+          else
+            echo "✅ Found: $file"
+          fi
+        done
+        
+        # Check icon files
+        icon_files=("icon16.png" "icon48.png" "icon128.png")
+        for icon in "${icon_files[@]}"; do
+          if [ ! -f "$icon" ]; then
+            echo "❌ Missing icon: $icon"
+            exit 1
+          else
+            echo "✅ Found: $icon"
+          fi
+        done
+        
+        echo "✅ File structure validation complete"
+
+    - name: Validate HTML files
+      run: |
+        echo "Validating HTML files..."
+        for file in *.html docs/*.html; do
+          if [ -f "$file" ]; then
+            echo "Checking $file..."
+            # Basic HTML validation - check for DOCTYPE and basic structure
+            if ! grep -q "<!DOCTYPE html>" "$file"; then
+              echo "❌ $file missing DOCTYPE declaration"
+              exit 1
+            fi
+            if ! grep -q "<html>" "$file"; then
+              echo "❌ $file missing html tag"
+              exit 1
+            fi
+            echo "✅ $file is valid"
+          fi
+        done
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Check for sensitive data
+      run: |
+        echo "Scanning for sensitive data patterns..."
+        
+        # Check for common sensitive patterns
+        sensitive_patterns=(
+          "api[_-]?key"
+          "secret"
+          "password"
+          "token"
+          "private[_-]?key"
+          "access[_-]?key"
+        )
+        
+        found_issues=false
+        
+        for pattern in "${sensitive_patterns[@]}"; do
+          if grep -ri "$pattern" --exclude-dir=.git --exclude="*.yml" --exclude="*.md" .; then
+            echo "❌ Found potential sensitive data pattern: $pattern"
+            found_issues=true
+          fi
+        done
+        
+        if [ "$found_issues" = true ]; then
+          echo "❌ Security scan failed - sensitive data patterns found"
+          exit 1
+        fi
+        
+        echo "✅ No sensitive data patterns detected"
+
+    - name: Check permissions
+      run: |
+        echo "Validating extension permissions..."
+        node -e "
+          const fs = require('fs');
+          const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+          
+          const permissions = manifest.permissions || [];
+          const allowedPermissions = ['activeTab', 'storage'];
+          
+          console.log('Declared permissions:', permissions);
+          
+          for (const perm of permissions) {
+            if (!allowedPermissions.includes(perm)) {
+              console.error(\`❌ Suspicious permission: \${perm}\`);
+              process.exit(1);
+            }
+          }
+          
+          console.log('✅ All permissions are approved');
+        "
+
+  build-extension:
+    name: Build Extension Package
+    runs-on: ubuntu-latest
+    needs: [validate, security-scan]
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Create extension package
+      run: |
+        echo "Creating extension package..."
+        
+        # Create build directory
+        mkdir -p build
+        
+        # Copy extension files (exclude docs and GitHub files)
+        cp manifest.json build/
+        cp *.js build/
+        cp *.html build/
+        cp *.css build/
+        cp *.png build/
+        
+        # Create README for the package
+        echo "# Homoglyph Detector Extension" > build/README.txt
+        echo "Version: $(node -pe "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')).version")" >> build/README.txt
+        echo "Installation: Load as unpacked extension in Chrome" >> build/README.txt
+        
+        # Create zip file
+        cd build
+        zip -r ../homoglyph-detector-extension.zip .
+        cd ..
+        
+        echo "✅ Extension package created: homoglyph-detector-extension.zip"
+        
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ./homoglyph-detector-extension.zip
+        asset_name: homoglyph-detector-extension.zip
+        asset_content_type: application/zip
+
+  deploy-pages:
+    name: Deploy GitHub Pages
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: docs/
+        
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

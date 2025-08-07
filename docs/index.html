@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homoglyph Detector Extension</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            line-height: 1.6; 
+            max-width: 1000px; 
+            margin: 0 auto; 
+            background-color: #f9f9f9;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: #2c5aa0;
+            margin-bottom: 10px;
+            font-size: 3em;
+        }
+        .header p {
+            color: #666;
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .badge {
+            background: #2c5aa0;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .badge:hover {
+            background: #1e3f73;
+        }
+        .badge.chrome {
+            background: #4285f4;
+        }
+        .badge.github {
+            background: #333;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .feature {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2c5aa0;
+        }
+        .feature h3 {
+            color: #2c5aa0;
+            margin-top: 0;
+        }
+        .demo {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .demo h3 {
+            color: #1565c0;
+            margin-top: 0;
+        }
+        .demo-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .demo-example {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        .demo-example code {
+            background: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            display: block;
+            margin: 5px 0;
+        }
+        .demo-example .suspicious {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .demo-example .normal {
+            color: #2e7d32;
+        }
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .link-button {
+            background: #2c5aa0;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .link-button:hover {
+            background: #1e3f73;
+            transform: translateY(-2px);
+        }
+        .link-button.secondary {
+            background: #666;
+        }
+        .link-button.secondary:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Homoglyph Detector</h1>
+            <p>Chrome Extension for Unicode Lookalike Character Detection</p>
+            
+            <div class="badges">
+                <a href="https://github.com/pOH7/homoglyph-detector-extension" class="badge github">📦 GitHub</a>
+                <a href="https://github.com/pOH7/homoglyph-detector-extension/releases" class="badge">📥 Download</a>
+                <span class="badge">🛡️ Security Tool</span>
+                <span class="badge">🔓 Open Source</span>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h3>🚨 Real-time Detection</h3>
+                <p>Automatically scans web pages for suspicious Unicode characters that could be used in phishing attacks.</p>
+            </div>
+            <div class="feature">
+                <h3>🎯 Visual Highlighting</h3>
+                <p>Highlights homoglyphs with yellow background and red underlines, making them easy to spot.</p>
+            </div>
+            <div class="feature">
+                <h3>📊 Detailed Analysis</h3>
+                <p>Hover over highlights to see Unicode code points, script origins, and character information.</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ Performance Optimized</h3>
+                <p>Efficient scanning with minimal impact on page loading performance.</p>
+            </div>
+            <div class="feature">
+                <h3>🔒 Privacy First</h3>
+                <p>All processing happens locally in your browser. No data sent to external servers.</p>
+            </div>
+            <div class="feature">
+                <h3>🛠️ Easy to Use</h3>
+                <p>Simple toggle controls and manual scanning options in the extension popup.</p>
+            </div>
+        </div>
+
+        <div class="demo">
+            <h3>🧪 Live Demo Examples</h3>
+            <p>These examples show how homoglyphs can be deceptive:</p>
+            
+            <div class="demo-examples">
+                <div class="demo-example">
+                    <strong>Banking Site</strong>
+                    <code class="normal">paypal.com</code>
+                    <code class="suspicious">р&#1072;ypal.com</code>
+                    <small>Uses Cyrillic р and а</small>
+                </div>
+                <div class="demo-example">
+                    <strong>Tech Company</strong>
+                    <code class="normal">apple.com</code>
+                    <code class="suspicious">&#1072;pple.com</code>
+                    <small>Uses Cyrillic а</small>
+                </div>
+                <div class="demo-example">
+                    <strong>Social Media</strong>
+                    <code class="normal">google.com</code>
+                    <code class="suspicious">g&#1086;&#1086;gle.com</code>
+                    <small>Uses Cyrillic о</small>
+                </div>
+                <div class="demo-example">
+                    <strong>Software</strong>
+                    <code class="normal">microsoft.com</code>
+                    <code class="suspicious">micr&#1086;s&#1086;ft.com</code>
+                    <small>Uses Cyrillic о</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="links">
+            <a href="test.html" class="link-button">🧪 Try Test Page</a>
+            <a href="about.html" class="link-button secondary">📖 Learn More</a>
+            <a href="https://github.com/pOH7/homoglyph-detector-extension" class="link-button secondary">💻 View Source</a>
+        </div>
+    </div>
+</body>
+</html>

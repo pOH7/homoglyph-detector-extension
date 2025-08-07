@@ -47,18 +47,30 @@ These can be used in:
 
 ```
 homoglyph-detector-extension/
-├── manifest.json              # Extension manifest
-├── homoglyph-detector.js      # Core detection library
-├── content.js                 # Content script for page scanning
-├── background.js              # Background service worker
-├── popup.html                 # Extension popup interface
-├── popup.js                   # Popup functionality
-├── styles.css                 # Highlighting styles
-├── icon16.png                 # 16x16 icon
-├── icon48.png                 # 48x48 icon
-├── icon128.png                # 128x128 icon
-├── create-icons.html          # Icon generation utility
-└── README.md                  # This file
+├── 📁 Extension Files
+│   ├── manifest.json              # Extension manifest (Manifest V3)
+│   ├── homoglyph-detector.js      # Core detection library
+│   ├── content.js                 # Content script for page scanning
+│   ├── background.js              # Background service worker
+│   ├── popup.html                 # Extension popup interface
+│   ├── popup.js                   # Popup functionality
+│   ├── styles.css                 # Highlighting styles
+│   ├── icon16.png                 # Extension icons (16x16, 48x48, 128x128)
+│   ├── icon48.png
+│   ├── icon128.png
+│   └── create-icons.html          # Icon generation utility
+│
+├── 📁 Documentation (GitHub Pages)
+│   ├── docs/
+│   │   ├── index.html             # Project homepage
+│   │   ├── test.html              # Interactive test page
+│   │   └── about.html             # Detailed documentation
+│
+├── 📁 CI/CD & Configuration
+│   ├── .github/workflows/ci.yml   # GitHub Actions pipeline
+│   ├── .gitignore                 # Git ignore patterns
+│   ├── CLAUDE.md                  # Claude Code guidance
+│   └── README.md                  # This file
 ```
 
 ## Technical Details
@@ -101,22 +113,55 @@ The extension will highlight these suspicious characters:
 ## Testing
 
 1. Click the extension icon
-2. Click "Test on Example Page" to open a test page with various homoglyphs
+2. Click "Test on Example Page" to open the [GitHub Pages test page](https://poh7.github.io/homoglyph-detector-extension/test.html) with various homoglyphs
 3. Enable detection and click "Scan Current Page"
 4. Observe the highlighted suspicious characters
 
+**Live Demo Pages:**
+- 🏠 [Project Homepage](https://poh7.github.io/homoglyph-detector-extension/) - Overview and features
+- 🧪 [Test Page](https://poh7.github.io/homoglyph-detector-extension/test.html) - Try the detector
+- 📖 [About Page](https://poh7.github.io/homoglyph-detector-extension/about.html) - Detailed documentation
+
 ## Development
 
-### Building
+### Quick Start
 
-No build process required - this is a vanilla JavaScript extension.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/pOH7/homoglyph-detector-extension.git
+   cd homoglyph-detector-extension
+   ```
+
+2. **Load in Chrome**
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select the project folder
+
+3. **Development Workflow**
+   - Make changes to the extension files
+   - Click the reload button in `chrome://extensions/` to update
+   - Test using the [test page](https://poh7.github.io/homoglyph-detector-extension/test.html)
+
+### Building & CI/CD
+
+- **No build process required** - This is a vanilla JavaScript extension
+- **GitHub Actions** automatically:
+  - Validates code on every push/PR
+  - Runs security scans
+  - Deploys documentation to GitHub Pages
+  - Creates release packages when tagged
 
 ### Testing
 
-1. Load the extension in developer mode
-2. Open the test page via the popup
-3. Test different scenarios and edge cases
-4. Check console for debugging information
+1. **Manual Testing**
+   - Load the extension in developer mode
+   - Open the [test page](https://poh7.github.io/homoglyph-detector-extension/test.html) via popup or directly
+   - Enable detection and click "Scan Current Page"
+   - Check console for debugging information
+
+2. **Automated Testing**
+   - GitHub Actions runs validation on every commit
+   - Includes manifest validation, JavaScript syntax checking, and security scans
 
 ### Contributing
 

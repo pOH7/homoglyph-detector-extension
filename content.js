@@ -71,14 +71,25 @@ class HomoglyphScanner {
         for (const mutation of mutations) {
           if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
             for (const node of mutation.addedNodes) {
+              // Skip our own highlighting changes
+              if (node.nodeType === Node.ELEMENT_NODE && 
+                  (node.className === 'homoglyph-highlight' || node.className === 'homoglyph-container')) {
+                continue;
+              }
+              
               if (node.nodeType === Node.TEXT_NODE || 
-                  (node.nodeType === Node.ELEMENT_NODE && node.textContent)) {
+                  (node.nodeType === Node.ELEMENT_NODE && node.textContent && 
+                   !node.closest('.homoglyph-container'))) {
                 shouldScan = true;
                 break;
               }
             }
           } else if (mutation.type === 'characterData') {
-            shouldScan = true;
+            // Skip character data changes within our highlights
+            if (mutation.target.parentElement && 
+                !mutation.target.parentElement.closest('.homoglyph-container, .homoglyph-highlight')) {
+              shouldScan = true;
+            }
           }
         }
         
@@ -125,6 +136,12 @@ class HomoglyphScanner {
     console.log('HomoglyphScanner: Starting page scan...');
     const startTime = performance.now();
     
+    // Temporarily disconnect observer to prevent infinite loop
+    const wasObserving = this.observer !== null;
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+    
     // Clear previous highlights
     this.clearHighlights();
     
@@ -143,6 +160,15 @@ class HomoglyphScanner {
     console.log(`HomoglyphScanner: Scan completed in ${(endTime - startTime).toFixed(2)}ms`);
     console.log(`HomoglyphScanner: Found ${totalSuspicious} suspicious characters in ${totalScanned} total characters`);
     
+    // Reconnect observer if it was observing before
+    if (wasObserving && this.observer) {
+      this.observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+    
     // Update badge
     this.updateBadge(totalSuspicious);
   }
@@ -157,6 +183,11 @@ class HomoglyphScanner {
           // Skip script and style elements
           const parent = node.parentElement;
           if (parent && (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          
+          // Skip nodes that are already highlighted
+          if (parent && parent.closest('.homoglyph-container, .homoglyph-highlight')) {
             return NodeFilter.FILTER_REJECT;
           }
           
@@ -187,7 +218,13 @@ class HomoglyphScanner {
       // Create highlights for suspicious characters
       const fragments = this.createHighlightFragments(text, results);
       
-      if (fragments.length > 1) { // Only replace if we have highlights
+      // Check if we have any highlighted fragments (not just multiple fragments)
+      const hasHighlights = fragments.some(fragment => 
+        fragment.nodeType === Node.ELEMENT_NODE && 
+        fragment.className === 'homoglyph-highlight'
+      );
+      
+      if (hasHighlights) {
         const parent = textNode.parentNode;
         const container = document.createElement('span');
         container.className = 'homoglyph-container';
@@ -213,6 +250,9 @@ class HomoglyphScanner {
     const fragments = [];
     let lastIndex = 0;
     
+    // Convert text to array of code points for proper indexing
+    const textArray = Array.from(text);
+    
     // Sort results by position
     const characterResults = results.filter(r => r.position !== undefined).sort((a, b) => a.position - b.position);
     
@@ -223,7 +263,7 @@ class HomoglyphScanner {
       
       // Add text before suspicious character
       if (position > lastIndex) {
-        const normalText = text.slice(lastIndex, position);
+        const normalText = textArray.slice(lastIndex, position).join('');
         fragments.push(document.createTextNode(normalText));
       }
       
@@ -240,8 +280,8 @@ class HomoglyphScanner {
     }
     
     // Add remaining text
-    if (lastIndex < text.length) {
-      const remainingText = text.slice(lastIndex);
+    if (lastIndex < textArray.length) {
+      const remainingText = textArray.slice(lastIndex).join('');
       fragments.push(document.createTextNode(remainingText));
     }
     

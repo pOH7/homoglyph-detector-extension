@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homoglyph Detector Test Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            line-height: 1.6; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background-color: #f9f9f9; 
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .test-section { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            background-color: #fafafa;
+        }
+        .test-section h3 { 
+            margin-top: 0; 
+            color: #2c5aa0;
+        }
+        code { 
+            background: #f5f5f5; 
+            padding: 2px 4px; 
+            font-family: monospace; 
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .instructions {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .instructions strong {
+            color: #1565c0;
+        }
+        .github-link {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .github-link a {
+            color: #2c5aa0;
+            text-decoration: none;
+        }
+        .github-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Homoglyph Detector Test Page</h1>
+        <p class="subtitle">This page contains various homoglyphs and suspicious Unicode characters for testing.</p>
+        
+        <div class="instructions">
+            <strong>Instructions:</strong> Enable the Homoglyph Detector extension and click "Scan Current Page" to see the suspicious characters highlighted.
+        </div>
+        
+        <div class="test-section">
+            <h3>Basic Cyrillic Lookalikes</h3>
+            <p>Normal: <code>master</code> - All Latin characters</p>
+            <p>Suspicious: <code>ma&#1109;ter</code> - Contains Cyrillic '&#1109;' (U+0455)</p>
+            <p>Suspicious: <code>&#1040;pple</code> - Contains Cyrillic '&#1040;' (U+0410)</p>
+            <p>Suspicious: <code>micros&#1086;ft</code> - Contains Cyrillic '&#1086;' (U+043E)</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Greek Lookalikes</h3>
+            <p>Suspicious: <code>g&#959;&#959;gle</code> - Contains Greek omicron '&#959;' (U+03BF)</p>
+            <p>Suspicious: <code>&#945;pple</code> - Contains Greek alpha '&#945;' (U+03B1)</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Mixed Scripts</h3>
+            <p>Suspicious: <code>&#1088;&#1072;ypal</code> - Contains Cyrillic '&#1088;' and '&#1072;'</p>
+            <p>Suspicious: <code>&#1072;mazon</code> - Contains Cyrillic '&#1072;'</p>
+            <p>Normal: <code>amazon</code> - All Latin characters</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Mathematical and Special Unicode</h3>
+            <p>Suspicious: <code>&#119808;pple</code> - Mathematical bold 'A' (U+1D400)</p>
+            <p>Suspicious: <code>test&#120793;&#120794;&#120795;</code> - Mathematical bold digits</p>
+        </div>
+        
+        <div class="test-section">
+            <h3>Common Domain Examples</h3>
+            <p>Suspicious domain: <code>g&#1086;&#1086;gle.com</code> (Cyrillic &#1086;)</p>
+            <p>Suspicious domain: <code>f&#1072;cebook.com</code> (Cyrillic &#1072;)</p>
+            <p>Suspicious domain: <code>&#1072;pple.com</code> (Cyrillic &#1072;)</p>
+        </div>
+        
+        <div class="github-link">
+            <p><a href="https://github.com/pOH7/homoglyph-detector-extension" target="_blank">🔗 View Extension Source on GitHub</a></p>
+        </div>
+    </div>
+</body>
+</html>
