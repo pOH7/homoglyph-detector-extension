@@ -1,0 +1,84 @@
+/* Homoglyph Detector Extension Styles */
+
+.homoglyph-highlight {
+  background-color: #ffeb3b !important;
+  color: #d84315 !important;
+  border-bottom: 2px solid #f44336 !important;
+  border-radius: 2px !important;
+  padding: 0 1px !important;
+  position: relative !important;
+  cursor: help !important;
+  font-weight: bold !important;
+  animation: homoglyph-pulse 2s ease-in-out infinite !important;
+}
+
+.homoglyph-highlight:hover {
+  background-color: #ffc107 !important;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.4) !important;
+}
+
+@keyframes homoglyph-pulse {
+  0%, 100% {
+    background-color: #ffeb3b;
+  }
+  50% {
+    background-color: #ffc107;
+  }
+}
+
+/* Tooltip enhancement */
+.homoglyph-highlight::after {
+  content: '⚠️';
+  position: absolute !important;
+  top: -8px !important;
+  right: -2px !important;
+  font-size: 8px !important;
+  opacity: 0.7 !important;
+}
+
+.homoglyph-container {
+  display: inline !important;
+}
+
+/* Different severity levels */
+.homoglyph-highlight[data-script*="Cyrillic"] {
+  border-color: #e53935 !important;
+}
+
+.homoglyph-highlight[data-script*="Greek"] {
+  border-color: #fb8c00 !important;
+}
+
+.homoglyph-highlight[data-script*="Mathematical"] {
+  border-color: #8e24aa !important;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .homoglyph-highlight {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border: 2px solid #ff0000 !important;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .homoglyph-highlight {
+    animation: none !important;
+  }
+}
+
+/* Print styles - hide highlights when printing */
+@media print {
+  .homoglyph-highlight {
+    background: transparent !important;
+    color: inherit !important;
+    border: none !important;
+    animation: none !important;
+  }
+  
+  .homoglyph-highlight::after {
+    display: none !important;
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Homoglyph Detector",
+  "version": "1.0",
+  "description": "Detects Unicode lookalike characters (homoglyphs) in web page content",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["homoglyph-detector.js", "content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Homoglyph Detector"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}

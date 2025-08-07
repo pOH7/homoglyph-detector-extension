@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Extension Icons</title>
+</head>
+<body>
+    <canvas id="icon16" width="16" height="16"></canvas>
+    <canvas id="icon48" width="48" height="48"></canvas>
+    <canvas id="icon128" width="128" height="128"></canvas>
+
+    <script>
+        function createIcon(canvasId, size) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            
+            // Background
+            ctx.fillStyle = '#4CAF50';
+            ctx.fillRect(0, 0, size, size);
+            
+            // Search magnifying glass
+            ctx.strokeStyle = '#fff';
+            ctx.fillStyle = '#fff';
+            ctx.lineWidth = size / 8;
+            
+            // Circle
+            ctx.beginPath();
+            ctx.arc(size * 0.35, size * 0.35, size * 0.2, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Handle
+            ctx.beginPath();
+            ctx.moveTo(size * 0.5, size * 0.5);
+            ctx.lineTo(size * 0.7, size * 0.7);
+            ctx.stroke();
+            
+            // Warning symbol in circle
+            ctx.fillStyle = '#ff9800';
+            ctx.font = `${size * 0.25}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('!', size * 0.35, size * 0.35);
+            
+            // Download the icon
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Create all icons
+        createIcon('icon16', 16);
+        createIcon('icon48', 48);
+        createIcon('icon128', 128);
+    </script>
+</body>
+</html>
