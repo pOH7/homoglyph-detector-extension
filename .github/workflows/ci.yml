@@ -174,6 +174,9 @@ jobs:
     needs: [validate, security-scan]
     if: github.event_name == 'release'
     
+    permissions:
+      contents: write
+      
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -205,14 +208,29 @@ jobs:
         echo "✅ Extension package created: homoglyph-detector-extension.zip"
         
     - name: Upload release asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
       with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./homoglyph-detector-extension.zip
-        asset_name: homoglyph-detector-extension.zip
-        asset_content_type: application/zip
+        files: |
+          homoglyph-detector-extension.zip
+        name: "Homoglyph Detector ${{ github.ref_name }}"
+        body: |
+          ## 🔍 Homoglyph Detector Extension
+          
+          **Chrome extension for detecting Unicode lookalike characters and preventing phishing attacks.**
+          
+          ### 📦 Installation
+          1. Download `homoglyph-detector-extension.zip`
+          2. Extract the files  
+          3. Load as unpacked extension in Chrome
+          
+          ### 🔗 Links
+          - [Test Page](https://poh7.github.io/homoglyph-detector-extension/test.html)
+          - [Documentation](https://poh7.github.io/homoglyph-detector-extension/about.html)
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        fail_on_unmatched_files: true
 
   deploy-pages:
     name: Deploy GitHub Pages
