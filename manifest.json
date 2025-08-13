@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Homoglyph Detector",
-  "version": "1.0.2",
-  "description": "Protect yourself from phishing attacks by detecting Unicode lookalike characters (homoglyphs) that visually mimic legitimate text. Highlights suspicious Cyrillic and Greek characters that resemble Latin letters.",
+  "version": "1.0.3",
+  "description": "Detects Unicode homoglyphs (lookalike characters) used in phishing attacks. Highlights suspicious Cyrillic/Greek characters.",
   "permissions": [
     "activeTab",
     "storage"
