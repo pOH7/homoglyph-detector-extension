@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Homoglyph Detector",
-  "version": "1.0",
-  "description": "Detects Unicode lookalike characters (homoglyphs) in web page content",
+  "version": "1.0.2",
+  "description": "Protect yourself from phishing attacks by detecting Unicode lookalike characters (homoglyphs) that visually mimic legitimate text. Highlights suspicious Cyrillic and Greek characters that resemble Latin letters.",
   "permissions": [
     "activeTab",
     "storage"
@@ -26,5 +26,7 @@
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
-  }
+  },
+  "homepage_url": "https://github.com/pOH7/homoglyph-detector-extension",
+  "author": "pOH7"
 }
