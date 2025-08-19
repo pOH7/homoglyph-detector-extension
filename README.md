@@ -1,5 +1,9 @@
 # 🔍 Homoglyph Detector Chrome Extension
 
+[![Version](https://img.shields.io/badge/version-1.0.3-blue.svg)](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-brightgreen.svg)](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+
 A Chrome extension that detects Unicode lookalike characters (homoglyphs) in web page content to help protect against phishing attacks and visual deception.
 
 ## What are Homoglyphs?
@@ -23,8 +27,20 @@ These can be used in:
 - 🚨 **Badge Notifications**: Displays count of suspicious characters in extension badge
 - ⚙️ **Easy Controls**: Enable/disable detection and manual scanning
 - 🧪 **Test Examples**: Built-in test page with common homoglyph examples
+- 🏪 **Chrome Web Store**: [Available for easy installation](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb) (v1.0.3)
 
 ## Installation
+
+### From Chrome Web Store (Recommended)
+
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Available-brightgreen?style=for-the-badge&logo=googlechrome)](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb)
+
+**Install directly from the Chrome Web Store:** [Homoglyph Detector](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb)
+
+1. Visit the [Chrome Web Store listing](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb)
+2. Click "Add to Chrome" 
+3. Confirm by clicking "Add extension"
+4. The extension icon will appear in your toolbar
 
 ### From Source (Development)
 
@@ -34,14 +50,15 @@ These can be used in:
 4. Click "Load unpacked" and select the extension folder
 5. The extension icon should appear in your toolbar
 
-### Usage
+## Usage
 
-1. **Automatic Scanning**: The extension automatically scans pages when loaded
-2. **Manual Control**: Click the extension icon to open the popup
-3. **Toggle Detection**: Use the switch in the popup to enable/disable scanning
-4. **View Results**: Suspicious characters are highlighted in yellow with red underlines
-5. **Get Details**: Hover over highlighted characters to see detailed information
-6. **Badge Counter**: The extension badge shows the number of suspicious characters found
+1. **Install**: Get the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb) (recommended) or load from source
+2. **Automatic Scanning**: The extension automatically scans pages when loaded
+3. **Manual Control**: Click the extension icon to open the popup
+4. **Toggle Detection**: Use the switch in the popup to enable/disable scanning
+5. **View Results**: Suspicious characters are highlighted in yellow with red underlines
+6. **Get Details**: Hover over highlighted characters to see detailed information
+7. **Badge Counter**: The extension badge shows the number of suspicious characters found
 
 ## File Structure
 
@@ -172,6 +189,18 @@ Contributions welcome! Areas for improvement:
 - Enhanced UI/UX
 - More comprehensive homoglyph database
 - Whitelist/blacklist functionality
+
+## Chrome Web Store
+
+**🏪 Official Extension Listing**: [Homoglyph Detector on Chrome Web Store](https://chromewebstore.google.com/detail/homoglyph-detector/lebfojooofeohniapabcoaoclidhhelb)
+
+- **Current Version**: 1.0.3
+- **Category**: Productivity & Security Tools
+- **Permissions**: Minimal (activeTab, storage only)
+- **Privacy**: No data collection, all processing local
+- **Updates**: Automatic through Chrome Web Store
+
+For support, reviews, and ratings, visit the official Chrome Web Store listing.
 
 ## Browser Compatibility
 
