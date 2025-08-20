@@ -110,6 +110,11 @@ class HomoglyphDetector {
       confidence: 0
     };
 
+    // Skip punctuation characters - they are legitimate and not homoglyphs
+    if (this.isPunctuation(char, codePoint)) {
+      return analysis;
+    }
+
     // Check for non-Latin characters that look like Latin
     if (script !== 'Latin' && lookalikes.length > 0) {
       analysis.isSuspicious = true;
@@ -193,6 +198,64 @@ class HomoglyphDetector {
     if (codePoint >= 0xFF00 && codePoint <= 0xFFEF) return 'Halfwidth and Fullwidth Forms';
     if (codePoint >= 0x2100 && codePoint <= 0x214F) return 'Letterlike Symbols';
     return 'Unknown';
+  }
+
+  isPunctuation(char, codePoint) {
+    // Check for common punctuation ranges
+    if (codePoint >= 0x0020 && codePoint <= 0x002F) return true; // Basic Latin punctuation
+    if (codePoint >= 0x003A && codePoint <= 0x0040) return true; // Basic Latin punctuation
+    if (codePoint >= 0x005B && codePoint <= 0x0060) return true; // Basic Latin punctuation
+    if (codePoint >= 0x007B && codePoint <= 0x007E) return true; // Basic Latin punctuation
+    if (codePoint >= 0x2000 && codePoint <= 0x206F) return true; // General Punctuation
+    if (codePoint >= 0x3000 && codePoint <= 0x303F) return true; // CJK Symbols and Punctuation
+    
+    // Halfwidth and Fullwidth Forms - but only punctuation characters
+    if (codePoint >= 0xFF00 && codePoint <= 0xFFEF) {
+      // Chinese/Japanese/Korean fullwidth punctuation marks
+      const fullwidthPunctuation = [
+        0xFF01, // ！ Fullwidth exclamation mark
+        0xFF02, // ＂ Fullwidth quotation mark
+        0xFF03, // ＃ Fullwidth number sign
+        0xFF05, // ％ Fullwidth percent sign
+        0xFF06, // ＆ Fullwidth ampersand
+        0xFF07, // ＇ Fullwidth apostrophe
+        0xFF08, // （ Fullwidth left parenthesis
+        0xFF09, // ） Fullwidth right parenthesis
+        0xFF0A, // ＊ Fullwidth asterisk
+        0xFF0C, // ， Fullwidth comma
+        0xFF0D, // － Fullwidth hyphen-minus
+        0xFF0E, // ． Fullwidth full stop
+        0xFF0F, // ／ Fullwidth solidus
+        0xFF1A, // ： Fullwidth colon
+        0xFF1B, // ； Fullwidth semicolon
+        0xFF1C, // ＜ Fullwidth less-than sign
+        0xFF1D, // ＝ Fullwidth equals sign
+        0xFF1E, // ＞ Fullwidth greater-than sign
+        0xFF1F, // ？ Fullwidth question mark
+        0xFF20, // ＠ Fullwidth commercial at
+        0xFF3B, // ［ Fullwidth left square bracket
+        0xFF3C, // ＼ Fullwidth reverse solidus
+        0xFF3D, // ］ Fullwidth right square bracket
+        0xFF3E, // ＾ Fullwidth circumflex accent
+        0xFF3F, // ＿ Fullwidth low line
+        0xFF40, // ｀ Fullwidth grave accent
+        0xFF5B, // ｛ Fullwidth left curly bracket
+        0xFF5C, // ｜ Fullwidth vertical line
+        0xFF5D, // ｝ Fullwidth right curly bracket
+        0xFF5E, // ～ Fullwidth tilde
+      ];
+      return fullwidthPunctuation.includes(codePoint);
+    }
+    
+    // Use Unicode categories for comprehensive punctuation detection
+    try {
+      // JavaScript doesn't have built-in Unicode category detection,
+      // but we can use a regex approach for common punctuation
+      return /[\p{P}]/u.test(char);
+    } catch (e) {
+      // Fallback if regex with Unicode properties isn't supported
+      return false;
+    }
   }
 
   // Utility method for quick character checking
